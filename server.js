@@ -1,4 +1,4 @@
-// server.js
+'use strict'
 
 var express  = require('express');
 var app      = express();
@@ -18,6 +18,15 @@ app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(methodOverride());
+
+app.use(function (req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
 
 mongoose.connect(config.database);
 app.set('superSecret', config.secret);
@@ -58,10 +67,8 @@ app.get('/users', function(req, res) {
 app.post('/login', function(req, res) {
 
     User.findOne({name: req.body.name, password: req.body.password}, function (err, user) {
-        if (err) {
-            console.log(err);
-            return res.send(401);
-            res.json({ success: false, message: 'Authentication failed. User not found.' });
+        if (err || !user) {
+            return res.json({ success: false, message: 'Authentication failed. User not found.' });
         }
 
         else if(user){
@@ -73,7 +80,6 @@ app.post('/login', function(req, res) {
                 message: 'Enjoy your token!',
                 token: token});
         }
-
         //var decoded = jwt.verify(token, 'testsecret');
         //console.log(decoded._doc.name) // bar
 
