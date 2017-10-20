@@ -72,7 +72,8 @@ app.post('/user/login', function (req, res) {
             return res.json({
                 success: true,
                 message: 'Enjoy your token!',
-                token: token
+                token: token,
+                user : user
             });
         }
         //var decoded = jwt.verify(token, 'testsecret');
