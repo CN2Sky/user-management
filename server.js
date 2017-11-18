@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var config = require('./config/database');
 var jwt = require('jsonwebtoken');
-var port = process.env.PORT || 9091;
+var port = process.env.PORT || 8080;
 
 var User = require('./models/User');
 
